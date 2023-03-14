@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% load static %}
+    <title>Time Keeping</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- CSS link -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'  %}">
+</head>
+<body>
+    <div>
+        <h1>Time Keeping</h1>
+        <form action="">
+            <label> Username:</label>
+            <input type="text" name="user"><br><br>
+            <label> Password:</label>
+            <input type="text" name="pass"><br>
+            <a href="{% url 'accounts:signup' %}">Don't have an account? sign up</a><br>
+            <button>login</button>
+            </form>
+    
+
+    </div>
+
+</body>
+</html>

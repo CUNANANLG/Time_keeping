@@ -1,0 +1,197 @@
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        background-color: #cedbef;
+    }
+    header {
+        width: 100%;
+        height: 10vh;
+        padding-top: 10px;
+    }
+    
+    #go-cloud {
+        height: 50px;
+        width: 50%;
+    }
+    
+    .time-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .actual-time-container {
+        flex: 1;
+    }
+    .actual-time-container h2 span {
+        padding: 10px;
+        font-size: 40px;
+    }
+    .actual-time-container h2 {
+        font-size: 100px;
+        margin-left: 20px;
+        color: rgb(0 95 231);
+    }
+    
+    .date-container {
+        display: flex;
+        flex: 1;
+    
+        justify-content: flex-end;
+    }
+    .date-container h4 {
+        font-size: 100px;
+        text-align: center;
+        color: rgb(0 95 231);
+        margin: 30px 0;
+    }
+    
+    .date-container h3,
+    .date-container h5 {
+        color: rgb(0 95 231);
+    }
+    .left {
+        margin-right: 20px;
+    }
+    .right h3 {
+        font-size: 80px;
+    }
+    .right h5 {
+        font-size: 50px;
+    }
+    
+    .days {
+        width: 100%;
+    }
+    
+    .days ul {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .days ul li {
+        list-style: none;
+        font-size: 50x;
+    }
+    .days ul li a {
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 20px;
+    }
+    
+    .active {
+        color: black;
+    }
+    .form {
+        width: 50%;
+        height: 40vh;
+        background: white;
+        margin: auto;
+        margin-top: 40px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 8px 5px rgba(0, 0, 0, 0.4);
+        padding: 70px;
+    }
+    
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        border: gray 1px solid;
+        height: 40px;
+        padding: 20px;
+    }
+    
+    button {
+        width: 100%;
+        margin-top: 10px;
+        height: 40px;
+        border-radius: 10px;
+        background: rgb(0 95 231);
+        color: white;
+        outline: none;
+        border: none;
+    }
+    button:hover {
+        background: rgb(4 65 151);
+    }
+    
+    ::placeholder {
+        padding: 10px;
+    }
+    
+    /* PHONE */
+    @media only screen and (max-width: 600px) {
+        .days ul li a {
+        font-size: 10px;
+        justify-content: center;
+        align-items: center;
+        }
+        .days {
+        width: 100%;
+        padding-right: 30px;
+        }
+        .form {
+        width: 100%;
+        padding: 30px 10px;
+        height: 30vh;
+        margin-bottom: 20px;
+        }
+        .date-container h4 {
+        font-size: 50px;
+        }
+        .actual-time-container h2 {
+        margin-left: 0;
+        font-size: 80px;
+        text-align: center;
+        }
+        .right h3,
+        .right h4 {
+        font-size: 50px;
+        }
+        .date-container {
+        justify-content: center;
+        }
+    }
+    /* TABLETS */
+    
+    @media only screen and (min-width: 600px) {
+        .actual-time-container h2 {
+        text-align: center;
+        }
+        .date-container {
+        justify-content: center;
+        }
+        .form {
+        width: 100%;
+        padding: 40px;
+        margin-bottom: 20px;
+        }
+    }
+    
+    /* LAPTOP */
+    
+    @media only screen and (min-width: 992px) {
+        .form {
+        width: 50%;
+        height: 40vh;
+        background: white;
+        margin: auto;
+        margin-top: 40px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 8px 5px rgba(0, 0, 0, 0.4);
+        padding: 70px;
+        }
+        .actual-time-container h2 {
+        text-align: left;
+        }
+    
+        .date-container {
+        justify-content: flex-end;
+        }
+    }

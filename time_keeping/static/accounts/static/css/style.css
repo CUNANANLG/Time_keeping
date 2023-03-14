@@ -1,0 +1,104 @@
+body{
+    text-align: center;
+}
+.h1{
+    width: 100%;
+    height: 15vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+h1 {
+    font-size: 120px;
+    text-transform: uppercase;
+    font-family: 'Gambetta', serif;
+    letter-spacing: -2px;
+    transition: 700ms ease;
+    font-variation-settings: "wght" 311;
+    margin-bottom: 0.8rem;
+    color: PaleGoldenRod;
+    outline: none;
+    text-align: center;
+}
+h1:hover {
+    font-variation-settings: "wght" 582; 
+    letter-spacing: 1px;
+}  
+h2
+{
+    text-align: center;
+    font-size: 50px;
+    color: dodgerblue;
+    
+}
+.login {
+    
+    display: flex;
+    width: 70%;
+    float: right;
+    display: flex;
+    justify-content: left;
+    padding: 20px 0;
+    
+}  
+.img{
+    
+    float: left;
+    padding: 22px;
+    margin-left:256px;
+    
+} 
+img{
+    width: 600px;
+    border-radius: 100px;
+}
+.blue{
+    width: 50%;
+}
+.green{
+    float: right;   
+}
+table
+{   
+    border-radius: 100px;
+    border: 1px solid black;
+    table-layout: auto;
+    width: 500px;
+    text-align: center; 
+    background-color: white;
+}
+td{
+    font-size: 26px;
+    padding: 10px;
+    
+}
+
+input{
+    height: 100%;
+    width: 90%;
+    padding: 12px;
+    margin: 8px ;
+}
+button{
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size:  16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+.submit{
+        background-color: white; 
+        color: black; 
+        border: 2px solid #4CAF50;
+}
+.submit:hover {
+        background-color: #4CAF50;
+        color: white;
+    }

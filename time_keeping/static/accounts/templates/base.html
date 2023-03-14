@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+            {% load static %}
+        <title>Time Keeping</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- CSS link -->
+        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'  %}">
+    </head>
+    <body>
+        <div class="float-container">
+            <div class="h1">
+                <h1>Time keeper</h1>
+            </div>
+            <div class="login">
+                <div class="blue">
+                    <form action="">
+                        <table align="center">
+                            <tr>
+                                <th colspan="2"><h2>LOGIN</h2></th>
+                            </tr>
+                                <tr>
+                                    <td colspan="2"> <label> Username:</label><input type="text" name="user"> </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <label> Password:</label> <input type="text" name="pass"><br></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <a href="{% url 'accounts:signup' %}">Don't have an account? sign up</a><br></td>
+                                </tr>
+                                <tr >
+                                <td colspan="2">
+                                    <button class="submit">LOGIN
+                                    </button></td>
+                                </tr>
+                        </table>
+                    </form> 
+                </div>
+            </div>
+            
+        </div>
+        
+    </body>
+</html>
+
+
+
+
+

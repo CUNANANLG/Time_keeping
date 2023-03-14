@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Monthly Report</h1>
+<p>Total Hours: {{ total_hours }}</p>
+<table>
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Time In</th>
+        <th>Time Out</th>
+        <th>Duration</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for date, time_records in time_records_by_date.items %}
+        {% for time_record in time_records %}
+        <tr>
+            {% if forloop.first %}
+            <td rowspan="{{ time_records|length }}">{{ date|date:"F j, Y" }}</td>
+            {% endif %}
+            <td>{{ time_record.time_in|time:"g:i A" }}</td>
+            <td>{{ time_record.time_out|time:"g:i A" }}</td>
+            <td>{{ time_record.duration }}</td>
+        </tr>
+        {% endfor %}
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
