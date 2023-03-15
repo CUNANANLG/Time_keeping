@@ -112,4 +112,3 @@ class TimeRecordListView(ListView):
     model = TimeRecord
     template_name = 'time_record_list.html'
 
-
