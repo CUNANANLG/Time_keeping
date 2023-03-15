@@ -1,13 +1,12 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.contrib import admin
+from django.shortcuts import render,redirect
+from accounts.models import User
 
+def Index(request):
+    context_dict = {}
 
-# Create your views here.
-def index(request):
-    return render(request, 'templates/base.html')
+    users = User.objects.all()
 
-def SignUp(request):
-    return render(request, 'templates/register.html')
-def Dashboard (request):
-    return render(request, 'templates/dashboard.html' )
+    context_dict["users"] = users
+    if request.session.get('loggedin'):
+        return redirect('accounts:time_out')
+    return render(request, 'time_in.html',context_dict)

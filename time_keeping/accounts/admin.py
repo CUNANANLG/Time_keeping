@@ -7,8 +7,11 @@ from .models import User, TimeRecord
 
 
 class EmployeeAdmin(UserAdmin, ImportExportModelAdmin):
-    list_display = ('id', 'username', 'email', 'first_name', 'last_name', 'is_active')
+    list_display = ('id', 'username', 'email', 'first_name', 'last_name', 'is_active', 'display_groups')
     list_per_page = 20
+    def display_groups(self, obj):
+        return ", ".join([group.name for group in obj.groups.all()])
+    display_groups.short_description = 'Groups'
 
     def toggle_active(self, request, queryset):
         for user in queryset:
@@ -36,8 +39,14 @@ class EmployeeAdmin(UserAdmin, ImportExportModelAdmin):
             'fields': ('id', 'first_name', 'last_name','password1', 'password2'),
         }),
         ('Permissions', {
-            'fields': ('is_active', 'is_staff', 'is_superuser'),
+            'fields': ('groups','is_active', 'is_staff'),
         }),
+    )
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'email')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+        ('Permissions', {'fields': ('groups','is_active', 'is_staff')}),
     )
 
 admin.site.register(User, EmployeeAdmin)
