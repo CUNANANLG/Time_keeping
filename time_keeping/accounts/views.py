@@ -28,6 +28,10 @@ def time_in(request):
                 time_in = timezone.now()
                 request.session['loggedin'] = True
                 TimeRecord.objects.create(user=user, time_in=time_in)
+                print(user.position_id)
+                if user is not None and user.is_authenticated and user.position_id is '2':
+                    return redirect('human_resource:accounting')
+                    
                 return redirect('accounts:view_records')
             else:
                 error_message = "Invalid Credentials or The Account is not Active"
@@ -35,6 +39,7 @@ def time_in(request):
                 return render(request, 'time_in.html', context_dict)
         else:
             if request.session.get('time_in'):
+                print(user.position_id)
                 return redirect('accounts:view_records')
             return render(request, 'time_in.html', context_dict)
 

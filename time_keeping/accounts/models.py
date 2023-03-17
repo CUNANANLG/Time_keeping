@@ -25,19 +25,19 @@ class TimeRecord(models.Model):
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, first_name, last_name, id, **extra_fields):
-        if not first_name or not last_name or not id:
-            raise ValueError('First name, last name, and id fields must be set')
+    def create_user(self, first_name, last_name, id, position, **extra_fields):
+        if not first_name or not last_name or not id or not position:
+            raise ValueError('First name, last name, id, and position fields must be set')
         username = f"{id}-{first_name}-{last_name}"
-        user = self.model(username=username, **extra_fields)
+        user = self.model(username=username, position=position, **extra_fields)
         user.set_password(str(id))
         user.save()
         return user
 
-    def create_superuser(self, first_name, last_name, id, password=None, **extra_fields):
+    def create_superuser(self, first_name, last_name, id, position, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        return self.create_user(first_name, last_name, id, password=password, **extra_fields)
+        return self.create_user(first_name, last_name, id, position, password=password, **extra_fields)
 
     def normalize_username(self, username):
         return username.strip().lower()
@@ -48,8 +48,16 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=30, blank=False)
     last_name = models.CharField(max_length=30, blank=False)
     id = models.CharField(max_length=255,unique=True,primary_key=True)
+    position = models.ForeignKey('Position', on_delete=models.PROTECT, related_name='users', blank=False)
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'position']
 
     objects = UserManager()
+
+
+class Position(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name

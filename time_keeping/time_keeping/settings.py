@@ -46,11 +46,14 @@ INSTALLED_APPS = [
     'bootstrap5',
     'import_export',
     'rangefilter',
+    'human_resource',
     
 ]
 LOGIN_URL = 'accounts:time_in'
 
 LOGIN_REDIRECT_URL = 'accounts:time_out'
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

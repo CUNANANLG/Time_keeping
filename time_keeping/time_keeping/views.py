@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from accounts.models import User
 
 def Index(request):
@@ -8,7 +8,10 @@ def Index(request):
 
     context_dict["users"] = users
     if request.session.get('loggedin'):
-        return redirect('accounts:time_out')
-    return render(request, 'time_in.html',context_dict)
-
-
+        user = request.user
+        if user.position_id == '2':
+            return redirect('human_resource:accounting')
+        else:
+            return redirect('accounts:view_records')
+    
+    return render(request, 'time_in.html', context_dict)

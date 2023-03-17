@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_accounts.html' %}
 {% block content %}
 <div class="container">
     <form class="form" action="{% url 'accounts:time_out'%}" method="POST" enctype="multipart/form-data">
@@ -19,7 +19,7 @@
     </div>
     {% endif %}
         <select name="username" id="username" class="form__input" required>
-            <option value="" class="disabled" disabled selected>--Select--</option>
+            <option value="" class="disabled" disabled selected>Select your username</option>
             {% for user in users %}
                 <option value="{{ user.username }}">{{ user.username }}</option>
             {% endfor %}
