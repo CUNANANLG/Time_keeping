@@ -42,15 +42,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounting',
     'accounts',
     'bootstrap5',
     'import_export',
     'rangefilter',
     
+    
 ]
 LOGIN_URL = 'accounts:time_in'
 
 LOGIN_REDIRECT_URL = 'accounts:time_out'
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

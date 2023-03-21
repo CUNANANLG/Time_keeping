@@ -1,10 +1,225 @@
-{% extends 'base.html' %}
+{% extends 'base_accounts.html' %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
 {% block content %}
-<div class="col-md-8 col-xs-12 col-sm-12 login_form ">
-<div class="container-fluid">
-    <div class="row">
-    {% include 'time_record_list.html' %} 
-</div>
-</div>
+			
+	<div class="content">
+		<div class="panel-header bg-primary-gradient">
+			<div class="page-inner py-5">
+				<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+					<div>
+						<h2 class="text-white pb-2 fw-bold">GoCloud Time Keeping</h2>
+					</div>
+				</div>
+			</div>
+		</div>
+        
+		<div class="page-inner mt--5">
+			<div class="row mt--2">
+				<div class="col-md-6">
+					<div class="card full-height">
+						<div class="card-body">
+							<div class="card-title">Overall statistics</div>
+							<div class="card-category">Daily information about statistics in system</div>
+							<div class="d-flex flex-wrap justify-content-around pb-2 pt-4">
+								<div class="px-2 pb-2 pb-md-0 text-center">
+									<div id="circles-1"></div>
+									<h6 class="fw-bold mt-3 mb-0">Present</h6>
+								</div>
+								<div class="px-2 pb-2 pb-md-0 text-center">
+									<div id="circles-2"></div>
+									<h6 class="fw-bold mt-3 mb-0">Absent</h6>
+								</div>
+								<div class="px-2 pb-2 pb-md-0 text-center">
+									<div id="circles-3"></div>
+									<h6 class="fw-bold mt-3 mb-0">Half-Day</h6>
+								</div>
+                                <div class="px-2 pb-2 pb-md-0 text-center">
+									<div id="circles-4"></div>
+									<h6 class="fw-bold mt-3 mb-0">Late</h6>
+								</div>
+                                <div class="px-2 pb-2 pb-md-0 text-center">
+									<div id="circles-5"></div>
+									<h6 class="fw-bold mt-3 mb-0">Overtime</h6>
+								</div>
+								<div class="px-2 pb-2 pb-md-0 text-center">
+									<div id="circles-6"></div>
+									<h6 class="fw-bold mt-3 mb-0">Undertime</h6>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="card full-height">
+						<div class="card-body">
+							<div class="card-title">Total Present Day statistics</div>
+							<div class="row py-3">
+								<div class="col-md-4 d-flex flex-column justify-content-around">
+									<div>
+										<h6 class="fw-bold text-uppercase text-success op-8">Total Income</h6>
+										<h3 class="fw-bold">$9.782</h3>
+									</div>
+									<div>
+										<h6 class="fw-bold text-uppercase text-danger op-8">Total Spend</h6>
+										<h3 class="fw-bold">$1,248</h3>
+									</div>
+								</div>
+								<div class="col-md-8">
+									<div id="chart-container">
+										<canvas id="totalDayChart"></canvas>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+            {% include 'time_record_list.html' %} 
+		</div>
+	</div>
+
 {% endblock content %}
 
+{% block javascripts %}
+	<script>
+		Circles.create({
+			id:'circles-1',
+			radius:45,
+			value:{{ counts.present }},
+			maxValue:30,
+			width:7,
+			text: {{ counts.present }},
+			colors:['#f1f1f1', '#FF9E27'],
+			duration:400,
+			wrpClass:'circles-wrp',
+			textClass:'circles-text',
+			styleWrapper:true,
+			styleText:true
+		})
+
+		Circles.create({
+			id:'circles-2',
+			radius:45,
+			value:1-{{ counts.absent }},
+			maxValue:30,
+			width:7,
+			text: 1-{{ counts.absent }},
+			colors:['#f1f1f1', '#2BB930'],
+			duration:400,
+			wrpClass:'circles-wrp',
+			textClass:'circles-text',
+			styleWrapper:true,
+			styleText:true
+		})
+
+		Circles.create({
+			id:'circles-3',
+			radius:45,
+			value:{{ counts.halfday }},
+			maxValue:30,
+			width:7,
+			text: {{ counts.halfday }},
+			colors:['#f1f1f1', '#F25961'],
+			duration:400,
+			wrpClass:'circles-wrp',
+			textClass:'circles-text',
+			styleWrapper:true,
+			styleText:true
+		})
+        Circles.create({
+			id:'circles-4',
+			radius:45,
+			value:{{ counts.late }},
+			maxValue:30,
+			width:7,
+			text: {{ counts.late }},
+			colors:['#f1f1f1', '#FF9E27'],
+			duration:400,
+			wrpClass:'circles-wrp',
+			textClass:'circles-text',
+			styleWrapper:true,
+			styleText:true
+		})
+        Circles.create({
+			id:'circles-5',
+			radius:45,
+			value:{{ counts.overtime }},
+			maxValue:30,
+			width:7,
+			text: {{ counts.overtime }},
+			colors:['#f1f1f1', '#2BB930'],
+			duration:400,
+			wrpClass:'circles-wrp',
+			textClass:'circles-text',
+			styleWrapper:true,
+			styleText:true
+		})
+		Circles.create({
+			id:'circles-6',
+			radius:45,
+			value:{{ counts.undertime }},
+			maxValue:30,
+			width:7,
+			text: {{ counts.undertime }},
+			colors:['#f1f1f1', '#F25961'],
+			duration:400,
+			wrpClass:'circles-wrp',
+			textClass:'circles-text',
+			styleWrapper:true,
+			styleText:true
+		})
+
+
+		var totalDayChart = document.getElementById('totalDayChart').getContext('2d');
+
+		var mytotalDayChart = new Chart(totalDayChart, {
+			type: 'bar',
+			data: {
+				labels: ["P", "A", "H","O"],
+				datasets : [{
+					label: "Total of Present, Absent, Halfday and Overtime A Month",
+					backgroundColor: '#ff9e27',
+					borderColor: 'rgb(23, 125, 255)',
+					data: [6, 4, 9, 5],
+				}],
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				legend: {
+					display: false,
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							display: false //this will remove only the label
+						},
+						gridLines : {
+							drawBorder: false,
+							display : false
+						}
+					}],
+					xAxes : [ {
+						gridLines : {
+							drawBorder: false,
+							display : false
+						}
+					}]
+				},
+			}
+		});
+
+		$('#lineChart').sparkline([105,103,123,100,95,105,115], {
+			type: 'line',
+			height: '70',
+			width: '100%',
+			lineWidth: '2',
+			lineColor: '#ffa534',
+			fillColor: 'rgba(255, 165, 52, .14)'
+		});
+	</script>
+
+{% endblock javascripts %}

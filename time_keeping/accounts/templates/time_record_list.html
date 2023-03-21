@@ -1,99 +1,90 @@
-<center><form method="GET" action="{% url 'accounts:view_records' %}">
-  {% csrf_token %}
-  <div class="row">
-      <div class="col-md-3">
-          <label for="id_date_from">Date From:</label>
-          <input type="date" id="id_date_from" name="date_from" class="form-control" value="{{ request.GET.date_from }}">
+<div class="col-md-12">
+  <div class="card">
+    <div class="card-header">
+      <form method="GET" action="{% url 'accounts:view_records' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-3">
+                <label for="id_date_from">Date From:</label>
+                <input type="date" id="id_date_from" name="date_from" class="form-control" value="{{ request.GET.date_from }}">
+            </div>
+            <div class="col-md-3">
+                <label for="id_date_to">Date To:</label>
+                <input type="date" id="id_date_to" name="date_to" class="form-control" value="{{ request.GET.date_to }}">
+            </div>
+                <div class="col-md-1">
+                  <button class="btn btn-primary" type="submit">Filter</button>
+            </div>
+        </div>
+      </form>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table id="basic-datatables" class="display table table-striped table-hover" >
+          <thead>
+            <tr>
+              <th>Time In</th>
+              <th>Time Out</th>
+              <th>Total time</th>
+              <th>Work Status</th>
+
+            </tr>
+          </thead>
+          <tfoot>
+                {% for time_record in page_obj %}
+              <tr>
+                <td>{{ time_record.time_in }}</td>
+                <td>{{ time_record.time_out }}</td>
+                <td>{{ time_record.total_time_display }}</td>
+                <td>{{ time_record.work_status }}</td>
+              </tr>
+              {% endfor %}
+          </tfoot>
+        </table>
       </div>
-      <div class="col-md-3">
-          <label for="id_date_to">Date To:</label>
-          <input type="date" id="id_date_to" name="date_to" class="form-control" value="{{ request.GET.date_to }}">
-      </div>
-          <div class="col-md-1">
-            <button class="btn btn-primary" type="submit">Filter</button>
-      </div>
+    </div>
   </div>
-</form>
-</center>
-
-<table class="table table-bordered">
-  <thead class="table-dark">
-    <tr>
-      <th>Time In</th>
-      <th>Time Out</th>
-      <th>Total time</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for time_record in page_obj %}
-    <tr>
-      <td>{{ time_record.time_in }}</td>
-      <td>{{ time_record.time_out }}</td>
-      <td>{{ time_record.total_time_display }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-<div class="pagination">
-  {% if is_paginated %}
-  <nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-  
-      {% if page_obj.has_previous %}
-      <li class="page-item">
-        <a class="page-link" href="?page=1" aria-label="First">
-          <span aria-hidden="true">&laquo;</span>
-          <span class="visually-hidden">First</span>
-        </a>
-      </li>
-      <li class="page-item">
-        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-          <span aria-hidden="true">&lsaquo;</span>
-          <span class="visually-hidden">Previous</span>
-        </a>
-      </li>
-      {% else %}
-      <li class="page-item disabled" aria-disabled="true" aria-label="Previous">
-        <span class="page-link" aria-hidden="true">&lsaquo;</span>
-        <span class="visually-hidden">Previous</span>
-      </li>
-      {% endif %}
-  
-      {% for num in page_obj.paginator.page_range %}
-      {% if page_obj.number == num %}
-      <li class="page-item active" aria-current="page">
-        <span class="page-link">{{ num }}<span class="visually-hidden">(current)</span></span>
-      </li>
-      {% else %}
-      <li class="page-item">
-        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-      </li>
-      {% endif %}
-      {% endfor %}
-  
-      {% if page_obj.has_next %}
-      <li class="page-item">
-        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-          <span aria-hidden="true">&rsaquo;</span>
-          <span class="visually-hidden">Next</span>
-        </a>
-      </li>
-      <li class="page-item">
-        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
-          <span aria-hidden="true">&raquo;</span>
-          <span class="visually-hidden">Last</span>
-        </a>
-      </li>
-      {% else %}
-      <li class="page-item disabled" aria-disabled="true" aria-label="Next">
-        <span class="page-link" aria-hidden="true">&rsaquo;</span>
-        <span class="visually-hidden">Next</span>
-      </li>
-      {% endif %}
-  
-    </ul>
-  </nav>
-  {% endif %}
+  <div class="row">
+    <div class="col-sm-12 col-md-5">
+      <div class="dataTables_info" id="add-row_info" role="status" aria-live="polite">
+        Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} entries
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-7">
+      <div class="dataTables_paginate paging_simple_numbers" id="add-row_paginate">
+        <ul class="pagination">
+          {% if page_obj.has_previous %}
+          <li class="paginate_button page-item previous" id="add-row_previous">
+            <a href="?page={{ page_obj.previous_page_number }}" aria-controls="add-row" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
+          </li>
+          {% else %}
+          <li class="paginate_button page-item previous disabled" id="add-row_previous">
+            <a href="#" aria-controls="add-row" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
+          </li>
+          {% endif %}
+          {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+          <li class="paginate_button page-item active">
+            <a href="#" aria-controls="add-row" data-dt-idx="{{ forloop.counter }}" tabindex="0" class="page-link">{{ num }}</a>
+          </li>
+          {% else %}
+          <li class="paginate_button page-item">
+            <a href="?page={{ num }}" aria-controls="add-row" data-dt-idx="{{ forloop.counter }}" tabindex="0" class="page-link">{{ num }}</a>
+          </li>
+          {% endif %}
+          {% endfor %}
+          {% if page_obj.has_next %}
+          <li class="paginate_button page-item next" id="add-row_next">
+            <a href="?page={{ page_obj.next_page_number }}" aria-controls="add-row" data-dt-idx="{{ page_obj.paginator.num_pages }}" tabindex="0" class="page-link">Next</a>
+          </li>
+          {% else %}
+          <li class="paginate_button page-item next disabled" id="add-row_next">
+            <a href="#" aria-controls="add-row" data-dt-idx="{{ page_obj.paginator.num_pages }}" tabindex="0" class="page-link">Next</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
   
 </div>
