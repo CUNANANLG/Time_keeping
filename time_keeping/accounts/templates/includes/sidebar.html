@@ -1,0 +1,61 @@
+		<!-- Sidebar -->
+		<div class="sidebar sidebar-style-2" data-background-color="dark2">	
+			<div class="sidebar-wrapper scrollbar scrollbar-inner">
+				<div class="sidebar-content">
+
+				{% if request.user.is_authenticated %}	
+					<div class="user">
+						<div class="avatar-sm float-left mr-2">
+							<img src="/static/assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle">
+						</div>
+						<div class="info">
+							<a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
+								<span>
+									{{ request.user.first_name }} {{ request.user.last_name }}
+									<span class="user-level">
+										{{ request.user.position }}
+									</span>
+									<span class="caret"></span>
+								</span>
+							</a>
+							<div class="clearfix"></div><div class="collapse in" id="collapseExample">
+								<ul class="nav">
+									<li>
+									<li>
+										<a href="{% url 'accounts:time_out' %}?next={% url 'accounts:time_in' %}">
+											<span class="link-collapse">Logout</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+
+							<div class="collapse in" id="collapseExample">
+								<ul class="nav">
+									<li>
+										<a href="#profile">
+											<span class="link-collapse">My Profile</span>
+										</a>
+									</li>
+									<li>
+										<a href="{% url 'accounts:time_out' %}?next={% url 'accounts:time_in' %}">Logout</a>
+											<span class="link-collapse">Logout</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<ul class="nav nav-primary">
+						<li class="nav-item {% if 'index' in segment %} active {% endif %}">
+							<a href="{% url 'accounts:view_records' %}">
+								<i class="fas fa-home"></i>
+								<p>Dashboard</p>
+
+							</a>
+						</li>
+				{% endif %}	
+				</div>
+			</div>
+		</div>
+        <!-- End Sidebar -->
+        

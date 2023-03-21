@@ -2,16 +2,40 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
-
 class TimeRecord(models.Model):
+    WORK_STATUS_CHOICES = [
+        ('present', 'Present'),
+        ('absent', 'Absent'),
+        ('late', 'Late'),
+        ('undertime', 'Undertime'),
+        ('overtime', 'Overtime'),
+        ('halfday', 'Half Day'),
+    ]
+    
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     time_in = models.DateTimeField(null=True, blank=True)
     time_out = models.DateTimeField(null=True, blank=True)
     total_time = models.DurationField(null=True, blank=True)
+    work_status = models.CharField(max_length=20, choices=WORK_STATUS_CHOICES, null=True, blank=True)
+    def __str__(self):
+        return f"{self.user} - {self.time_in}"
 
     def save(self, *args, **kwargs):
         if self.time_out and self.time_in:
             self.total_time = self.time_out - self.time_in
+            total_time_minutes = self.total_time.total_seconds() // 60
+            if total_time_minutes < 240:
+                self.work_status = 'Undertime'
+            elif total_time_minutes >= 240 and total_time_minutes < 480:
+                self.work_status = 'Half Day'
+            elif total_time_minutes >= 480 and total_time_minutes < 540:
+                self.work_status = 'Present'
+            elif total_time_minutes >= 540 and total_time_minutes < 600:
+                self.work_status = 'Late'
+            elif total_time_minutes >= 600:
+                self.work_status = 'Overtime'
+        else:
+            self.work_status = 'Absent'
         super().save(*args, **kwargs)
     
     def total_time_display(self):
@@ -22,6 +46,7 @@ class TimeRecord(models.Model):
         return ""
     
     total_time_display.short_description = 'Total time'
+
 
 
 class UserManager(BaseUserManager):

@@ -65,8 +65,8 @@ admin.site.register(User, EmployeeAdmin)
 
 class TimeRecordAdmin(ImportExportModelAdmin):
     resource_class = TimeRecordResource
-    list_filter = ('user', ('time_in', DateRangeFilter))
-    list_display = ('user', 'time_in', 'time_out', 'total_time_display')
+    list_filter = ('user','work_status', ('time_in', DateRangeFilter))
+    list_display = ('user', 'time_in', 'time_out', 'total_time_display', 'work_status')
     ordering = ('-time_in',)
     list_per_page = 10
 
@@ -86,6 +86,7 @@ class TimeRecordAdmin(ImportExportModelAdmin):
         return f"{hours:02d}:{minutes:02d}"
 
     total_time_display.admin_order_field = 'total_time'
+    
 
 
 admin.site.register(TimeRecord, TimeRecordAdmin)

@@ -42,11 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounting',
     'accounts',
     'bootstrap5',
     'import_export',
     'rangefilter',
-    'human_resource',
+    
     
 ]
 LOGIN_URL = 'accounts:time_in'

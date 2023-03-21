@@ -17,7 +17,7 @@ def time_in(request):
 
     context_dict["users"] = users
     if request.session.get('loggedin'):
-        return redirect('accounts:time_out')
+        return redirect('accounts:view_records')
     else:
         if request.method == 'POST':
             username = request.POST.get('username')
@@ -30,7 +30,7 @@ def time_in(request):
                 TimeRecord.objects.create(user=user, time_in=time_in)
                 print(user.position_id)
                 if user is not None and user.is_authenticated and user.position_id is '2':
-                    return redirect('human_resource:accounting')
+                    return redirect('accounting:account')
                     
                 return redirect('accounts:view_records')
             else:
@@ -45,42 +45,20 @@ def time_in(request):
 
 @login_required
 def time_out(request):
-    context_dict = {}
+    previous_record = request.user.timerecord_set.latest('time_in')
+    time_in = previous_record.time_in
+    previous_record.delete()
+    time_out = timezone.now()
+    duration = time_out - time_in
+    hours, remainder = divmod(duration.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    TimeRecord.objects.create(user=request.user, time_in=time_in, time_out=time_out)
+    message = f'Your Time Out is Successfully Recorded. Your time in was {time_in.strftime("%I:%M:%S %p")} and your time out was {time_out.strftime("%I:%M:%S %p")}. Your total time for this day was {hours} hours and {minutes:02d} minutes.'
+    messages.success(request, message)
+    logout(request)
+    return redirect('accounts:time_in')
 
-    users = User.objects.all()
 
-    context_dict["users"] = users
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-
-        if user is not None and user.is_authenticated:
-            if user == request.user:
-                logout(request)
-                previous_record = user.timerecord_set.latest('time_in')
-                time_in = previous_record.time_in
-                previous_record.delete()
-                time_out = timezone.now()
-                duration = time_out - time_in
-                hours, remainder = divmod(duration.seconds, 3600)
-                minutes, seconds = divmod(remainder, 60)
-                TimeRecord.objects.create(user=user, time_in=time_in, time_out=time_out)
-                message = f'Your Time Out is Successfully Recorded. Your time in was {time_in.strftime("%I:%M:%S %p")} and your time out was {time_out.strftime("%I:%M:%S %p")}. Your total time for this day was {hours} hours and {minutes:02d} minutes.'
-                messages.success(request, message)
-                return redirect('accounts:time_in')
-            else:
-                error_message = "Invalid logout credentials"
-                context_dict['error_message'] = error_message
-                return render(request, 'time_out.html', context_dict)
-        else:
-            error_message = "Invalid logout credentials"
-            context_dict['error_message'] = error_message
-            return render(request, 'time_out.html', context_dict)
-    else:
-        time_records = request.user.timerecord_set.all().order_by('-time_in')
-        context_dict['time_records'] = time_records
-        return render(request, 'time_out.html', context_dict)
     
 def time_record_list(request):
     return render(request, 'time_record_list.html')
@@ -96,7 +74,33 @@ def view_records(request):
         date_to = datetime.strptime(date_to, '%Y-%m-%d').date()
         time_records = time_records.filter(time_in__date__gte=date_from, time_out__date__lte=date_to)
 
-    paginator = Paginator(time_records, 5)
+    counts = {
+        'late': 0,
+        'absent': 0,
+        'halfday': 0,
+        'undertime': 0,
+        'present': 0,
+        'overtime': 0,
+    }
+
+    for time_record in time_records:
+        total_time = time_record.total_time.total_seconds() // 60 if time_record.total_time else None
+        if total_time is None:
+            counts['absent'] += 1
+        elif total_time < 240:
+            counts['undertime'] += 1
+        elif total_time >= 240 and total_time < 480:
+            counts['halfday'] += 1
+        elif total_time >= 480 and total_time < 540:
+            counts['present'] += 1
+        elif total_time >= 540 and total_time < 600:
+            counts['late'] += 1
+        elif total_time >= 600:
+            counts['present'] += 1
+            overtime = (total_time - 480) // 60 # calculate overtime in minutes
+            counts['overtime'] += overtime if overtime > 0 else 0
+
+    paginator = Paginator(time_records, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -106,8 +110,10 @@ def view_records(request):
         'paginator': paginator,
         'date_from': date_from,
         'date_to': date_to,
-        'user_initials': f"{request.user.first_name[0]}{request.user.last_name[0]}"
+        'user_initials': f"{request.user.first_name[0]}{request.user.last_name[0]}",
+        'counts': counts,
     }
+    print(counts)
 
     return render(request, 'view_records.html', context)
 
@@ -116,4 +122,3 @@ def view_records(request):
 class TimeRecordListView(ListView):
     model = TimeRecord
     template_name = 'time_record_list.html'
-

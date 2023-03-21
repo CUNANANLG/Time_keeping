@@ -10,8 +10,9 @@ def Index(request):
     if request.session.get('loggedin'):
         user = request.user
         if user.position_id == '2':
-            return redirect('human_resource:accounting')
+            return redirect('accounting:account')
         else:
             return redirect('accounts:view_records')
     
     return render(request, 'time_in.html', context_dict)
+

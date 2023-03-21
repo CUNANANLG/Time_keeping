@@ -24,7 +24,7 @@ urlpatterns = [
     path('', Index),
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls', namespace="accounts")),
-    path('human_resource/', include('human_resource.urls', namespace="human_resource")),
+    path('accounting/', include('accounting.urls', namespace="accounting")),
 
 ]
 
