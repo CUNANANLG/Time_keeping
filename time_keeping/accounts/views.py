@@ -4,17 +4,31 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import ListView
 from django.utils import timezone
-from .models import TimeRecord,User
+from .models import TimeRecord,User,TotalPresent
 from django.contrib import messages
 from django.core.paginator import Paginator
 from datetime import datetime
+from apscheduler.schedulers.background import BackgroundScheduler
+
+
+
+def mark_absent_users():
+    date = timezone.now().date()
+    users = User.objects.all()
+    for user in users:
+        if not TimeRecord.objects.filter(user=user, time_in__date=date).exists():
+            TimeRecord.objects.create(user=user, time_in=None, time_out=None)
+
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(mark_absent_users, 'interval', days=1, start_date='2023-03-24 00:00:00')
+scheduler.start()
+
 
 
 def time_in(request):
     context_dict = {}
-
     users = User.objects.all()
-
     context_dict["users"] = users
     if request.session.get('loggedin'):
         return redirect('accounts:view_records')
@@ -25,11 +39,11 @@ def time_in(request):
             user = authenticate(username=username, password=password)
             if user is not None and user.is_authenticated:
                 login(request, user)
-                time_in = timezone.now()
+                time_in = timezone.now().strftime('%Y-%m-%d %H:%M:%S')
                 request.session['loggedin'] = True
                 TimeRecord.objects.create(user=user, time_in=time_in)
                 print(user.position_id)
-                if user is not None and user.is_authenticated and user.position_id is '2':
+                if user is not None and user.is_authenticated and user.position_id == 2:
                     return redirect('accounting:account')
                     
                 return redirect('accounts:view_records')
@@ -52,6 +66,19 @@ def time_out(request):
     duration = time_out - time_in
     hours, remainder = divmod(duration.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
+    date = time_in.date()
+
+        # Get the current present count for the user and date
+    present_count = TotalPresent.objects.filter(user=request.user, date=timezone.now().date()).first()
+
+    # If there is a record for the user and date, update the present count
+    if present_count:
+        present_count.present_count += 1
+        present_count.save()
+    # If there is no record for the user and date, create a new one with present_count=1
+    else:
+        TotalPresent.objects.create(user=request.user, date=timezone.now().date(), present_count=1)
+
     TimeRecord.objects.create(user=request.user, time_in=time_in, time_out=time_out)
     message = f'Your Time Out is Successfully Recorded. Your time in was {time_in.strftime("%I:%M:%S %p")} and your time out was {time_out.strftime("%I:%M:%S %p")}. Your total time for this day was {hours} hours and {minutes:02d} minutes.'
     messages.success(request, message)
@@ -59,12 +86,15 @@ def time_out(request):
     return redirect('accounts:time_in')
 
 
-    
+
 def time_record_list(request):
     return render(request, 'time_record_list.html')
 
 @login_required
 def view_records(request):
+    user = request.user
+    if user.position_id == '2':
+        return redirect('accounting:account')
     time_records = TimeRecord.objects.filter(user=request.user).order_by('-time_in')
     date_from = request.GET.get('date_from')
     date_to = request.GET.get('date_to')
@@ -82,23 +112,30 @@ def view_records(request):
         'present': 0,
         'overtime': 0,
     }
-
+    print(user.position_id)
+    
     for time_record in time_records:
         total_time = time_record.total_time.total_seconds() // 60 if time_record.total_time else None
-        if total_time is None:
-            counts['absent'] += 1
-        elif total_time < 240:
-            counts['undertime'] += 1
-        elif total_time >= 240 and total_time < 480:
+        if time_out is None:
+            counts[''] 
+        elif total_time is None:
+            counts['absent']+=1 
+        elif total_time <= 240:
             counts['halfday'] += 1
-        elif total_time >= 480 and total_time < 540:
-            counts['present'] += 1
+        elif total_time >= 300 and total_time < 540:
+            counts['undertime'] += 1
         elif total_time >= 540 and total_time < 600:
-            counts['late'] += 1
-        elif total_time >= 600:
             counts['present'] += 1
-            overtime = (total_time - 480) // 60 # calculate overtime in minutes
+        elif total_time >= 600 and user.position_id  != 4:
+            counts['present'] += 1
+            overtime = (total_time - 510) // 60 
+            counts['overtime'] += overtime if overtime > 0 else 0 
+        elif total_time >= 600:
+            print(total_time)
+            counts['present'] += 1
+            overtime = (total_time - 600) // 60 
             counts['overtime'] += overtime if overtime > 0 else 0
+            
 
     paginator = Paginator(time_records, 6)
     page_number = request.GET.get('page')
@@ -113,9 +150,10 @@ def view_records(request):
         'user_initials': f"{request.user.first_name[0]}{request.user.last_name[0]}",
         'counts': counts,
     }
-    print(counts)
+
 
     return render(request, 'view_records.html', context)
+    
 
 
 

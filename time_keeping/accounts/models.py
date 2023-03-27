@@ -1,43 +1,59 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+import datetime
+from django.utils import timezone
+
+
+class TotalPresent(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    present_count = models.IntegerField()
+    date = models.DateField()
+
+    def __str__(self):
+        return f"{self.user.username} - {self.date.strftime('%B %Y')} - {self.present_count} present(s)"
 
 class TimeRecord(models.Model):
     WORK_STATUS_CHOICES = [
         ('present', 'Present'),
         ('absent', 'Absent'),
-        ('late', 'Late'),
         ('undertime', 'Undertime'),
         ('overtime', 'Overtime'),
         ('halfday', 'Half Day'),
     ]
-    
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     time_in = models.DateTimeField(null=True, blank=True)
     time_out = models.DateTimeField(null=True, blank=True)
     total_time = models.DurationField(null=True, blank=True)
     work_status = models.CharField(max_length=20, choices=WORK_STATUS_CHOICES, null=True, blank=True)
+    date = models.DateField(default=timezone.now)
+
     def __str__(self):
         return f"{self.user} - {self.time_in}"
 
     def save(self, *args, **kwargs):
         if self.time_out and self.time_in:
-            self.total_time = self.time_out - self.time_in
-            total_time_minutes = self.total_time.total_seconds() // 60
-            if total_time_minutes < 240:
-                self.work_status = 'Undertime'
-            elif total_time_minutes >= 240 and total_time_minutes < 480:
-                self.work_status = 'Half Day'
-            elif total_time_minutes >= 480 and total_time_minutes < 540:
-                self.work_status = 'Present'
-            elif total_time_minutes >= 540 and total_time_minutes < 600:
-                self.work_status = 'Late'
-            elif total_time_minutes >= 600:
-                self.work_status = 'Overtime'
-        else:
-            self.work_status = 'Absent'
+            start_time = datetime.datetime.strptime('08:30:00', '%H:%M:%S').time()
+            workday_start = datetime.datetime.combine(self.time_in.date(), start_time)
+
+            if self.time_in < workday_start:
+                self.work_status = 'Absent'
+            else:
+                self.total_time = self.time_out - self.time_in
+                total_time_minutes = self.total_time.total_seconds() // 60
+                if self.time_out is None:
+                    self.work_status = ''
+                elif total_time_minutes >= 300 and total_time_minutes < 540:
+                    self.work_status = 'Undertime'
+                elif total_time_minutes <= 240:
+                    self.work_status = 'Half Day'
+                elif total_time_minutes >= 540 and total_time_minutes < 630:
+                    self.work_status = 'Present'
+                elif total_time_minutes >= 630:
+                    self.work_status = 'Overtime'
         super().save(*args, **kwargs)
-    
+
     def total_time_display(self):
         if self.time_out and self.time_in:
             duration = self.time_out - self.time_in

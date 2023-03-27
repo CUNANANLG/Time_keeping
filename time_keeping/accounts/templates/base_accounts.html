@@ -39,22 +39,22 @@
 	<body data-background-color="bg3">
 		<div class="wrapper">
 
-			{% include 'includes/navigation.html' %}
+			{% include 'accounts/templates/includes/navigation.html' %}
 
-			{% include 'includes/sidebar.html' %}
+			{% include 'accounts/templates/includes/sidebar.html' %}
 
 			<div class="main-panel">
 				
 				{% block content %}{% endblock content %}
 
-				{% include 'includes/footer.html' %}
+				{% include 'accounts/templates/includes/footer.html' %}
 
 			</div>
 		
 
 		</div>
 
-		{% include 'includes/scripts.html' %}
+		{% include 'accounts/templates/includes/scripts.html' %}
 
 		<!-- Specific Page JS goes HERE  -->
 		{% block javascripts %}{% endblock javascripts %}

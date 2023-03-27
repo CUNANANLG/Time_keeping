@@ -15,13 +15,14 @@ Including another URLconf
 """
 from django.urls import path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from .views import account
+from .views import account,attendance
 
 
 app_name='accounting'
 
 urlpatterns = [
     path('account/',account, name='account'),
+    path('attendance/',attendance, name='attendance'),
 
 ]
 
