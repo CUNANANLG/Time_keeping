@@ -99,7 +99,7 @@ DATABASES = {
         'OPTIONS': {
             'sql_mode': 'STRICT_ALL_TABLES',
         },
-        'NAME': 'timekeeping',
+        'NAME': 'time_keeping',
 
         'USER': 'root',
 

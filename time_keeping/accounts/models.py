@@ -4,6 +4,15 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 import datetime
 from django.utils import timezone
 
+
+class TotalPresent(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    present_count = models.IntegerField()
+    date = models.DateField()
+
+    def __str__(self):
+        return f"{self.user.username} - {self.date.strftime('%B %Y')} - {self.present_count} present(s)"
+
 class TimeRecord(models.Model):
     WORK_STATUS_CHOICES = [
         ('present', 'Present'),
@@ -45,12 +54,6 @@ class TimeRecord(models.Model):
                     self.work_status = 'Overtime'
         super().save(*args, **kwargs)
 
-
-
-
-
-
-    
     def total_time_display(self):
         if self.time_out and self.time_in:
             duration = self.time_out - self.time_in

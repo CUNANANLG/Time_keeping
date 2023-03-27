@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import ListView
 from django.utils import timezone
-from .models import TimeRecord,User
+from .models import TimeRecord,User,TotalPresent
 from django.contrib import messages
 from django.core.paginator import Paginator
 from datetime import datetime
@@ -57,6 +57,7 @@ def time_in(request):
                 return redirect('accounts:view_records')
             return render(request, 'time_in.html', context_dict)
 
+@login_required
 def time_out(request):
     previous_record = request.user.timerecord_set.latest('time_in')
     time_in = previous_record.time_in
@@ -65,6 +66,19 @@ def time_out(request):
     duration = time_out - time_in
     hours, remainder = divmod(duration.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
+    date = time_in.date()
+
+        # Get the current present count for the user and date
+    present_count = TotalPresent.objects.filter(user=request.user, date=timezone.now().date()).first()
+
+    # If there is a record for the user and date, update the present count
+    if present_count:
+        present_count.present_count += 1
+        present_count.save()
+    # If there is no record for the user and date, create a new one with present_count=1
+    else:
+        TotalPresent.objects.create(user=request.user, date=timezone.now().date(), present_count=1)
+
     TimeRecord.objects.create(user=request.user, time_in=time_in, time_out=time_out)
     message = f'Your Time Out is Successfully Recorded. Your time in was {time_in.strftime("%I:%M:%S %p")} and your time out was {time_out.strftime("%I:%M:%S %p")}. Your total time for this day was {hours} hours and {minutes:02d} minutes.'
     messages.success(request, message)

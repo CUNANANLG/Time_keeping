@@ -31,14 +31,20 @@
 						<li class="nav-item dropdown hidden-caret">
 							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
 								<div class="avatar-sm">
-									<img src="/static/assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle">
+									<div class="avatar avatar-online">
+										<span class="avatar-title rounded-circle border border-white">{{ user.first_name.0 }}{{ user.last_name.0 }}</span>
+									</div>
 								</div>
 							</a>
 							<ul class="dropdown-menu dropdown-user animated fadeIn">
 								<div class="dropdown-user-scroll scrollbar-outer">
 									<li>
 										<div class="user-box">
-											<div class="avatar-lg"><img src="/static/assets/img/profile.jpg" alt="image profile" class="avatar-img rounded"></div>
+											<div class="avatar-lg">
+												<div class="avatar avatar-online">
+													<span class="avatar-title rounded-circle border border-white">{{ user.first_name.0 }}{{ user.last_name.0 }}</span>
+												</div>
+											</div>
 											<div class="u-text">
 												<h4>
 													{{ request.user.first_name }} {{ request.user.last_name }}

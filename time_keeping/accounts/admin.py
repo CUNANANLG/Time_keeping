@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from rangefilter.filters import DateRangeFilter
 from import_export.admin import ImportExportModelAdmin
 from .resources import TimeRecordResource
-from .models import User, TimeRecord,Position
+from .models import User, TimeRecord,Position,TotalPresent
 
 class PositionAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
@@ -86,7 +86,6 @@ class TimeRecordAdmin(ImportExportModelAdmin):
         return f"{hours:02d}:{minutes:02d}"
 
     total_time_display.admin_order_field = 'total_time'
-    
 
 
 admin.site.register(TimeRecord, TimeRecordAdmin)
