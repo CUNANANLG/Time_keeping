@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 {% block stylesheets %}{% endblock stylesheets %}
-
-
 {% block content %}
 
 	<div class="content">
@@ -10,7 +8,7 @@
 				<h4 class="page-title">Attendance</h4>
 				<ul class="breadcrumbs">
 					<li class="nav-home">
-						<a href="#">
+						<a href="{%url 'accounting:account'%}">
 							<i class="flaticon-home"></i>
 						</a>
 					</li>
@@ -39,6 +37,7 @@
 												<th>{{ date|date:"M d" }} ({{ date|date:"D" }})</th>
 											{% endfor %}
 											<th>Total Present</th>
+											<th>Total Absents</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -49,7 +48,8 @@
 												{% for status in user_data.weekly_data %}
 													<td>{{ status }}</td>
 												{% endfor %}
-												<td>{{ user_data.present_count }}</td>
+												<td>{{ user_data.total_present }}</td>
+												<td>{{ user_data.total_absents }}</td>
 											</tr>
 										{% endfor %}
 									</tbody>

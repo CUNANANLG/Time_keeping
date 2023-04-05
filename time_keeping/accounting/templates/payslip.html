@@ -1,0 +1,560 @@
+{% extends "base.html" %}
+
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+
+	<div class="content">
+		<div class="page-inner">
+			<div class="page-header">
+				<h4 class="page-title">Accounting Profile</h4>
+				<ul class="breadcrumbs">
+					<li class="nav-home">
+						<a href="#">
+							<i class="flaticon-home"></i>
+						</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href="#">Accounting Profile</a>
+					</li>
+				</ul>
+			</div>
+            <div class="card">
+				<div class="card-body">
+                    <div class="row row-demo-grid">
+                        <div class="col-12 col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="form-group form-floating-label">
+                                        <span class="h3">Select Username: </span><br>
+                                        <select class="form-control input-solid" id="username" name="username" required>
+                                            <option value="" class="disabled" disabled selected></option>
+                                                {% for user in users %}
+                                                    <option value="{{ user.username }}">{{ user.username }}</option>
+                                                {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th><span class="h3">Total Net Pay</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>₱<span id="Total_NetPay"></span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>  
+                        </div>
+                        <div class="col-6 col-md-4">
+                                    <button class="btn btn-primary">
+                                        <span class="btn-label">
+                                            <i class="fa fa-bookmark"></i>
+                                        </span>
+                                        Payslip
+                                    </button>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <h4 class="h1">GOCLOUD INC.
+
+                                </h4>
+                        </div>
+                        <div class="col-sm-4">
+                            <h4 class="h1"> 
+                                Payroll Register
+
+                                </h4>
+                        </div>
+                        <div class="col-sm-4">
+                            <h4 class="h1">
+                                Payroll Period:<br>
+                                <form method="GET" action="{% url 'accounting:payslip' %}">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                            <label for="id_date_from">Date From:</label>
+                                            <input type="date" id="id_date_from" name="date_from" class="form-control" value="{{ request.GET.date_from }}">
+                                        
+                                        
+                                            <label for="id_date_to">Date To:</label>
+                                            <input type="date" id="id_date_to" name="date_to" class="form-control" value="{{ request.GET.date_to }}">
+                                        
+                                    </div>
+                                            <button class="btn btn-info" type="submit">Filter</button>
+                                </form>
+
+                                </h4>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Bank Account No.</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>PAID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Allowance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>OverTime</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Holiday <br>(Fixed Rate)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Holiday <br>(30%)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Unpaid/Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Reimbusement</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Total Number of Days</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="total_present">
+                                        </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Basic Salary</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="basicS"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Miscellaneous</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="miss"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>NET PAY</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="Netpay"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>NET PAY W/O UNPAID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="Netpay_Ub"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Net pay without OT and Holiday</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="Netpay_holiday"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>GROSS PAY</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="grosspay"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="card-body text-center">
+                        <h4 class="card-title">Deductions</h4>
+                    </div>
+					<div class="row row-demo-grid">
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Absences</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Late/ UT Hrs</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+						<div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>SSS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+						<div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>PhilHealth</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+						<div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Pag-ibig</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Overpayment</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Excess</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Excess</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Total Deductions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="TotalDeductions"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+					</div>
+                </div>
+            </div>
+		</div>
+	</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+	<!-- Atlantis DEMO methods, don't include it in your project! -->
+	<script src="/static/assets/js/setting-demo2.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#username').change(function() {
+                var username = $(this).val();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'accounting:payslip'%}",
+                    data: {
+                        'username': username,
+                        'csrfmiddlewaretoken':'{{ csrf_token }}'},
+                    success: function(data) {
+
+                        var salary = data.salary.toLocaleString('en-US');
+        
+                        $('#salary').html(salary);
+        
+                        var basicS = data.basicS.toLocaleString('en-US');
+                        $('#basicS').html(basicS);
+        
+                        var miss = data.miss.toLocaleString('en-US');
+                        $('#miss').html(miss);
+
+                        var TotalDeductions = data.TotalDeductions.toLocaleString('en-US');
+                        $('#TotalDeductions').html(TotalDeductions);
+                        
+                        var grosspay = data.grosspay.toLocaleString('en-US');
+                        $('#grosspay').html(grosspay);
+                        
+
+                        var Netpay = data.Netpay.toLocaleString('en-US');
+                        $('#Netpay').html(Netpay);
+                        
+                        var Netpay_Ub = data.Netpay_Ub.toLocaleString('en-US');
+                        $('#Netpay_Ub').html(Netpay_Ub);
+
+                        var Netpay_holiday = data.Netpay_holiday.toLocaleString('en-US');
+                        $('#Netpay_holiday').html(Netpay_holiday);
+
+                        
+                        var Total_NetPay = data.Total_NetPay.toLocaleString('en-US');
+                        $('#Total_NetPay').html(Total_NetPay);
+
+                        var total_present = data.total_present.toLocaleString('en-US');
+                        $('#total_present').html(total_present);
+                    }
+                });
+            });
+        });
+        
+    </script>
+
+{% endblock javascripts %}

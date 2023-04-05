@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.urls import path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from .views import account,attendance
+from .views import account,attendance,payslip,employeeprofile,edit_employeeprofile
 
 
 app_name='accounting'
@@ -23,6 +23,9 @@ app_name='accounting'
 urlpatterns = [
     path('account/',account, name='account'),
     path('attendance/',attendance, name='attendance'),
+    path('payslip/',payslip, name='payslip'),
+    path('employeeprofile/', employeeprofile ,name='employeeprofile'),
+    path('edit_employeeprofile/', edit_employeeprofile ,name='edit_employeeprofile'),
 
 ]
 

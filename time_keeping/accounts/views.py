@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import ListView
 from django.utils import timezone
-from .models import TimeRecord,User,TotalPresent
+from .models import TimeRecord,User,TotalPresent,MonthlyTotalPresent
 from django.contrib import messages
 from django.core.paginator import Paginator
 from datetime import datetime
@@ -31,6 +31,9 @@ def time_in(request):
     users = User.objects.all()
     context_dict["users"] = users
     if request.session.get('loggedin'):
+        for user in users:
+            if user.position_id != 2:
+                return redirect('accounting:account')
         return redirect('accounts:view_records')
     else:
         if request.method == 'POST':
@@ -38,6 +41,14 @@ def time_in(request):
             password = request.POST.get('password')
             user = authenticate(username=username, password=password)
             if user is not None and user.is_authenticated:
+                # Check if user has already logged time for today
+                today = timezone.now().date()
+                time_record = TimeRecord.objects.filter(user=user, date=today).first()
+                if time_record is not None:
+                    error_message = "You have already logged your time for today"
+                    context_dict['error_message'] = error_message
+                    return render(request, 'time_in.html', context_dict)
+
                 login(request, user)
                 time_in = timezone.now().strftime('%Y-%m-%d %H:%M:%S')
                 request.session['loggedin'] = True
@@ -67,19 +78,17 @@ def time_out(request):
     hours, remainder = divmod(duration.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     date = time_in.date()
-
-        # Get the current present count for the user and date
-    present_count = TotalPresent.objects.filter(user=request.user, date=timezone.now().date()).first()
-
-    # If there is a record for the user and date, update the present count
-    if present_count:
-        present_count.present_count += 1
-        present_count.save()
-    # If there is no record for the user and date, create a new one with present_count=1
-    else:
-        TotalPresent.objects.create(user=request.user, date=timezone.now().date(), present_count=1)
-
-    TimeRecord.objects.create(user=request.user, time_in=time_in, time_out=time_out)
+    present_count = 1
+    total_present, created = TotalPresent.objects.get_or_create(user=request.user, date=timezone.now().date(),present_count=present_count)
+    time_record = TimeRecord.objects.create(user=request.user, time_in=time_in, time_out=time_out, total_present=total_present)
+    month = date.month
+    year = date.year
+    monthly_total_present, created = MonthlyTotalPresent.objects.get_or_create(user=request.user, month=date, defaults={'total_present': present_count})
+    if not created:
+        monthly_total_present.total_present += present_count
+        monthly_total_present.save()
+    time_record.total_present = total_present
+    time_record.save()  
     message = f'Your Time Out is Successfully Recorded. Your time in was {time_in.strftime("%I:%M:%S %p")} and your time out was {time_out.strftime("%I:%M:%S %p")}. Your total time for this day was {hours} hours and {minutes:02d} minutes.'
     messages.success(request, message)
     logout(request)
@@ -93,7 +102,7 @@ def time_record_list(request):
 @login_required
 def view_records(request):
     user = request.user
-    if user.position_id == '2':
+    if user.position_id == 2:
         return redirect('accounting:account')
     time_records = TimeRecord.objects.filter(user=request.user).order_by('-time_in')
     date_from = request.GET.get('date_from')
@@ -112,7 +121,7 @@ def view_records(request):
         'present': 0,
         'overtime': 0,
     }
-    print(user.position_id)
+
     
     for time_record in time_records:
         total_time = time_record.total_time.total_seconds() // 60 if time_record.total_time else None
