@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block content %}
+	<div class="content">
+		<div class="page-inner">
+			<div class="page-header">
+				<h4 class="page-title">Employee Profile</h4>
+				<ul class="breadcrumbs">
+					<li class="nav-home">
+						<a href="#">
+							<i class="flaticon-home"></i>
+						</a>
+					</li>
+					<li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						Payroll
+					</li>
+                    <li class="separator">
+						<i class="flaticon-right-arrow"></i>
+					</li>
+					<li class="nav-item">
+						<a href="#">Employee Profile</a>
+					</li>
+				</ul>
+			</div>
+            <div class="card">
+				<div class="card-body">
+                    <div class="row row-demo-grid">
+                        <div class="col-12 col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="form-group form-floating-label">
+                                        <select class="form-control input-solid" id="username" name="username" required>
+                                            <option value="" class="disabled" disabled selected>Select your username</option>
+                                                {% for user in users %}
+                                                    <option value="{{ user.username }}">{{ user.username }}</option>
+                                                {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-5">
+                            Total Net Pay
+                        </div>
+                        <div class="col-6 col-md-3">
+                                <a href="{%url 'accounting:edit_employeeprofile'%}">
+                                    <button class="btn btn-primary">
+                                        <span class="btn-label">
+                                            <i class="fa fa-bookmark"></i>
+                                        </span>
+                                        Edit
+                                    </button>
+                                </a>
+                                
+                            </div>
+                        <div class="col-6">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th><h1> Salary:</h1></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><h3 id="salary"></h3></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="table-responsive">
+                                <div class="form-group">
+                                    <label for="comment">Remarks</label>
+                                    <textarea class="form-control" id="comment" rows="3">
+                                    </textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    
+                                    <thead>
+                                        <tr>
+                                            <th><h2>Position</h2></th>
+                                            <th><h2>Bi-Monthly</h2></th>
+                                            <th><h2>Daily Rate</h2></th>
+                                            <th><h2>Hourly Rate</h2></th>
+                                            <th><h2>Overtime Rate fixed</h2></th>
+                                            <th><h2>Overtime Rate 30%</h2></th>
+                                            <th><h2>Basic Rate</h2></th>
+                                            <th><h2>Miscellaneous</h2></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr> 
+                                            <td id="position"></td>
+                                            <td id="bimonthly"></td>
+                                            <td id="dailyR"></td>
+                                            <td id="hourlyR"></td>
+                                            <td id="otR"></td>
+                                            <td id="otHR"></td>
+                                            <td id="basicR"></td>
+                                            <td id="mis"></td>
+                                            
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                                
+                    </div>
+                    <div class="card-body text-center">
+                        <h1>Additional & Deductions</h1>
+                    </div>
+					<div class="row row-demo-grid">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th><h2>LATE/TARDINESS</h2></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="late_tardiness"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-3">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th><h2>SSS</h2></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="sss"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th><h2>Pag-ibig</h2></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="pagibig"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th><h2>PhilHealth</h2></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="philhealth"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+						<div class="col-md-4 ml-auto mr-auto">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th><h2>OverTime</h2></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="overtime"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-4 ml-auto mr-auto">
+                            <div class="table-responsive">
+                                <table class="display table table-striped table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th><h2>No. of HOLIDAY</h2></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="no_of_holiday"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+					</div>
+                </div>
+            </div>
+		</div>
+	</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+	<script src="/static/assets/js/setting-demo2.js"></script>
+	<script >
+		$(document).ready(function() {
+			$('#basic-datatables').DataTable({
+			});
+
+			$('#multi-filter-select').DataTable( {
+				"pageLength": 5,
+				initComplete: function () {
+					this.api().columns().every( function () {
+						var column = this;
+						var select = $('<select class="form-control"><option value=""></option></select>')
+						.appendTo( $(column.footer()).empty() )
+						.on( 'change', function () {
+							var val = $.fn.dataTable.util.escapeRegex(
+								$(this).val()
+								);
+
+							column
+							.search( val ? '^'+val+'$' : '', true, false )
+							.draw();
+						} );
+
+						column.data().unique().sort().each( function ( d, j ) {
+							select.append( '<option value="'+d+'">'+d+'</option>' )
+						} );
+					} );
+				}
+			});
+
+			// Add Row
+			$('#add-row').DataTable({
+				"pageLength": 5,
+			});
+
+		});
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#username').change(function() {
+                var username = $(this).val();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'accounting:employeeprofile'%}",
+                    data: {
+                        'username': username,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                    success: function(data) {
+                        var salary = parseInt(data.salary);
+                        $('#salary').html(salary);
+                        $('#salaryedit').val(salary);
+                        $('#position').html(data.position);
+                        var bimonthly = data.bimonthly.toLocaleString('en-US');
+                        $('#bimonthly').html(bimonthly);
+                        var dailyR = data.dailyR.toLocaleString('en-US');
+                        $('#dailyR').html(dailyR);
+                        var hourlyR = data.hourlyR.toLocaleString('en-US');
+                        $('#hourlyR').html(hourlyR);
+                        var otR = data.otR.toLocaleString('en-US');
+                        $('#otR').html(otR);
+                        var otHR = data.otHR.toLocaleString('en-US');
+                        $('#otHR').html(otHR);
+                        var basicR = data.basicR.toLocaleString('en-US');
+                        $('#basicR').html(basicR);
+                        var mis = data.mis.toLocaleString('en-US');
+                        $('#mis').html(mis);
+                        var sss = data.sss.toLocaleString('en-US');
+                        $('#sss').html(sss);
+                        var late_tardiness = data.late_tardiness.toLocaleString('en-US');
+                        $('#late_tardiness').html(late_tardiness);
+                        var overtime = data.overtime.toLocaleString('en-US');
+                        $('#overtime').html(overtime);
+                        var no_of_holiday = data.no_of_holiday.toLocaleString('en-US');
+                        $('#no_of_holiday').html(no_of_holiday);
+                        var philhealth = data.philhealth.toLocaleString('en-US');
+                        $('#philhealth').html(philhealth);
+                        var pagibig = data.pagibig.toLocaleString('en-US');
+                        $('#pagibig').html(pagibig);
+                    }
+                });
+            });
+		});
+        
+    </script>
+{% endblock javascripts %}

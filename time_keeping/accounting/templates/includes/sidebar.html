@@ -1,4 +1,3 @@
-		<!-- Sidebar -->
 		<div class="sidebar sidebar-style-2" data-background-color="dark2">	
 			<div class="sidebar-wrapper scrollbar scrollbar-inner">
 				<div class="sidebar-content">
@@ -57,10 +56,31 @@
 
 							</a>
 						</li>
+						<li class="nav-item">
+							<a data-toggle="collapse" href="#submenu">
+								<i class="fas fa-bars"></i>
+								<p>Payroll</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="submenu">
+								<ul class="nav nav-collapse subnav">
+									<li>
+										<a href="{% url 'accounting:employeeprofile' %}">
+											<span class="sub-item">Employee Profile</span>
+
+										</a>
+									</li>
+									<li>
+										<a href="{% url 'accounting:payslip' %}">
+											<span class="sub-item">Payslip</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
 					</ul>
 				{% endif %}	
 				</div>
 			</div>
 		</div>
-        <!-- End Sidebar -->
         

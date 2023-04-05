@@ -1,8 +1,30 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-import datetime
 from django.utils import timezone
+from django.db.models import Sum
+from django.urls import reverse
+import datetime
+
+class Additional_Deductions(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name='edit_employee_profile'
+        )
+    late_tardiness = models.IntegerField(null=True, blank=True, default=0)
+    sss = models.IntegerField(null=True, blank=True, default=0)
+    overtime = models.IntegerField(null=True, blank=True, default=0)
+    no_of_holiday = models.IntegerField(null=True, blank=True, default=0)
+    pagibig = models.IntegerField(null=True, blank=True, default=0)
+    philhealth = models.IntegerField(null=True, blank=True, default=0)
+
+
+
+
+class EmployeeProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='employee_profile')
+    salary = models.IntegerField(null=True, blank=True)
 
 
 class TotalPresent(models.Model):
@@ -27,11 +49,14 @@ class TimeRecord(models.Model):
     time_out = models.DateTimeField(null=True, blank=True)
     total_time = models.DurationField(null=True, blank=True)
     work_status = models.CharField(max_length=20, choices=WORK_STATUS_CHOICES, null=True, blank=True)
+    total_present = models.ForeignKey('TotalPresent',null=True, blank=True, on_delete=models.CASCADE)
     date = models.DateField(default=timezone.now)
+    overtime_minutes = models.IntegerField(default=0)
+    overtime_hours = models.FloatField(default=0.0)
 
     def __str__(self):
         return f"{self.user} - {self.time_in}"
-
+    
     def save(self, *args, **kwargs):
         if self.time_out and self.time_in:
             start_time = datetime.datetime.strptime('08:30:00', '%H:%M:%S').time()
@@ -48,11 +73,22 @@ class TimeRecord(models.Model):
                     self.work_status = 'Undertime'
                 elif total_time_minutes <= 240:
                     self.work_status = 'Half Day'
-                elif total_time_minutes >= 540 and total_time_minutes < 630:
+                elif total_time_minutes >= 540 and total_time_minutes < 600:
                     self.work_status = 'Present'
-                elif total_time_minutes >= 630:
-                    self.work_status = 'Overtime'
+                elif total_time_minutes >= 600:
+                    if self.user.id == 4:
+                        self.work_status = 'Overtime'
+                        excess_minutes = total_time_minutes - 600
+                        self.overtime_minutes = excess_minutes
+                        self.overtime_hours = excess_minutes / 60
+                    else:
+                        self.work_status = 'Overtime'
+                        excess_minutes = total_time_minutes - 510
+                        self.overtime_minutes = excess_minutes
+                        self.overtime_hours = excess_minutes / 60
+
         super().save(*args, **kwargs)
+
 
     def total_time_display(self):
         if self.time_out and self.time_in:
@@ -91,10 +127,16 @@ class User(AbstractUser):
     id = models.CharField(max_length=255,unique=True,primary_key=True)
     position = models.ForeignKey('Position', on_delete=models.PROTECT, related_name='users', blank=False)
 
+
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'position']
 
     objects = UserManager()
+class MonthlyTotalPresent(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    total_present = models.IntegerField()
+    month = models.DateField()
+
 
 
 class Position(models.Model):

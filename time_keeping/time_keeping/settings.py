@@ -87,6 +87,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'time_keeping.wsgi.application'
 
+SCHEDULER_EVENT_MODEL = 'accounting.HolidayEvent'
+
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
